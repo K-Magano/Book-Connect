@@ -1,4 +1,4 @@
-    import { BOOKS_PER_PAGE, authors, genres, books, content } from "./data.js";
+import { BOOKS_PER_PAGE, authors, genres, books, content } from "./data.js";
 
     const matches = books;
     const page = 1;
@@ -19,16 +19,16 @@
   * when the user clicks on the settings (moon and sun) button to change the layout theme */
 
     content.header.headerSettings.addEventListener("click", () => {
-    content.settings.overlay.toggleAttribute("open");
+    content.settings.overlay.open = !content.settings.overlay.open;
     });
 
 //----- Submit btn for THEME------
     content.settings.settingForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-
+    event.preventDefault()
+    content.settings.overlay.close();
+    
 // Get the form data as an object
     const formData = new FormData(event.target);
-//converts the form data object into a plain JavaScript object called "result".
     const result = Object.fromEntries(formData);
  
 /*changes the color scheme of the application to match the selected theme*/
@@ -41,11 +41,10 @@
     v = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day'
 
  // Close the settings overlay if it was open
-    if (document.querySelector('[data-settings-overlay]').open) {
-    document.querySelector('[data-settings-overlay]').open = false;
-      }
+ if (content.settings.overlay.open){
+  content.settings.overlay.open = false;
+ }
     });
-
     document.addEventListener("DOMContentLoaded", () => {
     const localS = localStorage.getItem('theme');
 
@@ -187,16 +186,16 @@ content.list.items.appendChild(fragment);
     content.header.headerSearch.addEventListener("click", () => {
     content.search.overlay.toggleAttribute("open");
     });
- 
-//finds all the titles of the books.
-    let title = books.map(({title}) => {
-  //console.log(title);
-  
-})
 
-//Search for book titles.
+ content.search.findCancel.addEventListener('click', () => {
+  content.search.overlay.close();
+ });
+
+
+
 
  //!showing list dynamically START HERE CHANGE THE ELEMeNTS SO YOU CAN GET THE LIST 
+//Search for book titles.
 
 function displayTitles(titles) {
   // Clear the current content before displaying the new titles
@@ -245,14 +244,14 @@ searchBar.addEventListener('keyup', (e) => {
 
 //!END------------------------
 
-//---- Search genres -----
-/* for...in loop to iterate over an object called genres. 
-For each key-value pair in the genres object*/
- 
+ //-----Search genres --------
 const placeholder1 = document.createElement("option");
 placeholder1.value = "";
 placeholder1.textContent = "All genre";
 content.search.findGenre.appendChild(placeholder1);
+
+/* for...in loop to iterate over an object called genres. 
+For each key-value pair in the genres object*/
 
 for (const id in genres) {
   const element = document.createElement("option");
@@ -260,8 +259,6 @@ for (const id in genres) {
   element.textContent = genres[id];
   content.search.findGenre.appendChild(element);
 };
-
-
 
 // ---- Search authors ----
 const placeholder2 = document.createElement("option");
@@ -276,18 +273,23 @@ for (const id in authors) {
   content.search.findAuthor.appendChild(element);
 }
 
+content.search.findAuthor.addEventListener("change", (event) => {
+  event.preventDefault();
+  const filteredTitles = books.filter((books) => {
+  
+  });
+  displayTitles(filteredTitles);
+});
+
 content.search.find.addEventListener("click", (event) => {
   event.preventDefault();
   const filteredTitles = books.filter((books) => {
-    return (
+    return (//There has to be a better
       books.title.toLowerCase().includes(content.search.findTitle.value.toLowerCase()) &&
-      (content.search.findGenre.value === "" || books.genre === content.search.findGenre.value) &&
+      (content.search.findGenre.value === "" || books.genres === content.search.findGenre.value) &&
       (content.search.findAuthor.value === "" || books.author === content.search.findAuthor.value)
     );
   });
   displayTitles(filteredTitles);
   content.search.overlay.toggleAttribute("open");
 });
-
-       
-   

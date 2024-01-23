@@ -1,5 +1,5 @@
  //Importing data from "./data.js"
-    import { BOOKS_PER_PAGE, authors, genres, books, content } from "./data.js";
+    import { BOOKS_PER_PAGE, authors, genres, books, content } from "../book-connect-main/data.js";
    
  //Select all books as matches and set them to page 1
     const matches = books;
